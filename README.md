@@ -1,4 +1,5 @@
-# Chicago-Taxi---Database-Fundamentals
+# Chicago-Taxi-Database-Fundamentals
+
 # Objetive
 
 To analyze taxi service data and server logs using SQL and Linux command-line tools to investigate potential issues related to vehicle availability, trip records, and HTTP errors.
@@ -33,31 +34,36 @@ Retrieved and organized taxi service data to investigate vehicle availability, t
 # Evidence
 
 **Command used to retrieve the required logs and the results obtained**.
-grep -R "^233.201" ~/logs/2019/12
+- grep -R "^233.201" ~/logs/2019/12
 
-imagen
+<img width="367" height="106" alt="imagen (6)" src="https://github.com/user-attachments/assets/e9bbb8dd-1be2-46fa-b85e-73a5273241cf" />
 
-Commands used to extract the logs from `main.txt` into `400.txt` and `500.txt`.
+**Commands used to extract the logs from `main.txt` into `400.txt` and `500.txt`.**
 
 - grep "400" ~/bug1/main.txt> ~/bug1/events/400.txt
 - grep "500" ~/bug1/main.txt> ~/bug1/events/500.txt
 
 **Excerpt of the list of companies with fewer than 100 vehicles and the SQL query used.**
 
+```sql
 chicago_taxi=# SELECT company_name, COUNT(*) AS cnt
 FROM cabs GROUP BY company_name
 HAVING COUNT (*) < 100 ORDER BY cnt DESC;
+```
 
-imagen
+<img width="225" height="255" alt="imagen (7)" src="https://github.com/user-attachments/assets/acc0c6ee-68d9-475b-ae3c-11e6e7ad6d6a" />
+
 
 **Result table for Weather Conditions Classification** 
 
-(May 11 - Jun 11, 2017), selection from weather_records categorizing conditions into "Bad" (rain/storm) or "Good" using a CASE statement
+- (May 11 - Jun 11, 2017), selection from weather_records categorizing conditions into "Bad" (rain/storm) or "Good" using a CASE statement
 
-imagen
+<img width="166" height="252" alt="imagen (8)" src="https://github.com/user-attachments/assets/6848e28c-b3fa-4d84-9184-8bfe17c7e067" />
 
-SQL Query
 
+**SQL Query**
+
+```sql
 SELECT ts,
 CASE
 WHEN description LIKE '%rain%' OR description LIKE '%storm%' THEN 'Bad'
@@ -65,7 +71,7 @@ ELSE 'Good'
 END AS weather_conditions
 FROM weather_records
 WHERE ts BETWEEN '2017-11-05 00:00:00' AND '2017-11-06 00:00:00';
+```
 
-Documentation of the exercises performed
-https://docs.google.com/document/d/1q3A2y9f2qTaJNBTPAB-P6-c4FtFxh2D1/edit?pli=1
+[Documentation of the exercises performed](https://docs.google.com/document/d/1q3A2y9f2qTaJNBTPAB-P6-c4FtFxh2D1/edit?pli=1)
 
