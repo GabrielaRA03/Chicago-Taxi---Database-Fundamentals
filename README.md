@@ -2,48 +2,55 @@
 
 # Objetive
 
-To analyze taxi service data and server logs using SQL and Linux command-line tools to investigate potential issues related to vehicle availability, trip records, and HTTP errors.
+To analyze taxi trip records, fleet availability, and historical weather conditions using PostgreSQL queries, while conducting server log auditing and directory management using Linux command-line tools.
 
 # Problem Definition
 
-The taxi service team needed to investigate reports of insufficient vehicle availability and inconsistencies in trip data. Server logs also needed to be analyzed to identify requests from specific IP addresses and separate HTTP 400 and 500 errors for further investigation.
+TThe Chicago taxi platform required an investigation into trip data, pricing, and vehicle availability to identify operational bottlenecks and potential fleet shortages. Additionally, evaluating historical weather data (rain/storms) by date and time was necessary to assess external impacts on ride demand. 
+
+On the server side, log auditing was required to inspect requests from specific IP addresses, establish structured event directories, and isolate HTTP client errors (400) and server crashes (500) for engineering root-cause analysis.
 
 # What I Did
 
-- Connected to a remote server and used Linux command-line tools to search server logs by IP address and filter requests.
-- Extracted logs from a specified time period and separated HTTP 400 and 500 errors into individual files.
-- Queried the taxi database to count available vehicles and identify companies with fewer than 100 vehicles.
-- Used SQL queries to analyze trip records, compare trip volumes across taxi companies, and investigate fare-related data.
-- Applied SQL filtering, grouping, conditional logic, and table relationships to retrieve relevant data for investigation.
+- Connected to remote servers via terminal to search raw server logs by IP address, created dedicated directories (~/bug1/events/), and extracted HTTP 400 and 500 error records into separate .txt files
+- Queried the chicago_taxi database using SELECT, WHERE, JOIN, GROUP BY, and HAVING to count available vehicles, identify companies with fewer than 100 cabs, and analyze trip volumes and fares across specific date ranges.
+- Used conditional CASE logic on weather_records to classify weather conditions by date and hour into "Good" or "Bad" (identifying rain or storm keywords) during targeted periods.
 
 # Technologies Used
 
-SQL · PostgreSQL · psql · Linux · SELECT · JOIN · GROUP BY · HAVING · CASE · Server Log Analysis
+SQL · PostgreSQL · psql · Linux CLI (File & Directory Management) · grep · SELECT · JOIN · GROUP BY · HAVING · CASE · Server Log Analysis
 
 # Results
 
-Retrieved and organized taxi service data to investigate vehicle availability, trip volumes, and fare-related information. Filtered server logs by IP address and HTTP status codes, separating error records into files for further analysis.
+- Created file directories and successfully isolated client errors (400) and server crashes (500) into 400.txt and 500.txt from main.txt, streamlining error tracking for developers.
+- Identified taxi companies operating with fewer than 100 vehicles (e.g., Nova Taxi Affiliation LLC with 97 cabs, Patriot Taxi with 89), highlighting potential supply shortages in specific areas.
+- Classified weather conditions across specific date ranges and timeframes, providing structured datasets to correlate bad weather (rain/storms) with spikes in trip demand.
 
 # Learnings
 
-- Practiced using Linux command-line tools to search, filter, and organize server logs.
-- Learned to query relational databases using SQL.
-- Strengthened my understanding of JOIN, GROUP BY, HAVING, and CASE.
-- Applied data analysis techniques to investigate potential software and service issues.
+- Developed practical command-line skills in Linux for text filtering (grep), directory creation, and file manipulation.
+- GAin hands-on experience SQL techniques in PostgreSQL for data aggregation (GROUP BY, HAVING), conditional classification (CASE), and relational joins across trip and weather tables.
 
 # Evidence
-
-**Command used to retrieve the required logs and the results obtained**.
+**IP Search & Server Log Filtering (Linux CLI)**
 - grep -R "^233.201" ~/logs/2019/12
 
 <img width="367" height="106" alt="imagen (6)" src="https://github.com/user-attachments/assets/e9bbb8dd-1be2-46fa-b85e-73a5273241cf" />
 
-**Commands used to extract the logs from `main.txt` into `400.txt` and `500.txt`.**
+This evidence validates: Demonstrates log auditing using Linux regex search tools to locate all request logs associated with target IP addresses (233.201.*)
+
+<br>
+
+**Directory Creation & HTTP Error File Redirection**
 
 - grep "400" ~/bug1/main.txt> ~/bug1/events/400.txt
 - grep "500" ~/bug1/main.txt> ~/bug1/events/500.txt
 
-**Excerpt of the list of companies with fewer than 100 vehicles and the SQL query used.**
+This evidence Confirms the creation of dedicated event directories and the extraction of HTTP 400 and 500 status code log entries into separate files for backend error analysis
+
+<br>
+
+**Taxi Companies with Small Fleets (< 100 Vehicles)**
 
 ```sql
 chicago_taxi=# SELECT company_name, COUNT(*) AS cnt
@@ -53,15 +60,15 @@ HAVING COUNT (*) < 100 ORDER BY cnt DESC;
 
 <img width="225" height="255" alt="imagen (7)" src="https://github.com/user-attachments/assets/acc0c6ee-68d9-475b-ae3c-11e6e7ad6d6a" />
 
+This validates aggregate SQL queries using GROUP BY and HAVING filters to identify companies with fleet sizes below 100 vehicles.
 
-**Result table for Weather Conditions Classification** 
+<br>
+
+**Weather Condition Classification by Timestamp** 
 
 - (May 11 - Jun 11, 2017), selection from weather_records categorizing conditions into "Bad" (rain/storm) or "Good" using a CASE statement
 
 <img width="166" height="252" alt="imagen (8)" src="https://github.com/user-attachments/assets/6848e28c-b3fa-4d84-9184-8bfe17c7e067" />
-
-
-**SQL Query**
 
 ```sql
 SELECT ts,
@@ -72,6 +79,11 @@ END AS weather_conditions
 FROM weather_records
 WHERE ts BETWEEN '2017-11-05 00:00:00' AND '2017-11-06 00:00:00';
 ```
+
+This evidence demonstrates conditional evaluation (CASE) in PostgreSQL to classify weather conditions by timestamp (date and hour) into "Good" or "Bad
+
+
+<br>
 
 [Documentation of the exercises performed](https://docs.google.com/document/d/1q3A2y9f2qTaJNBTPAB-P6-c4FtFxh2D1/edit?pli=1)
 
